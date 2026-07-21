@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ImIRC
+GenericName=IRC Client
+Comment=Lightweight IRC client built with Dear ImGui
+Exec=imirc
+Icon=imirc
+Terminal=false
+Categories=Network;Chat;InstantMessaging;
+StartupNotify=true
+Keywords=IRC;chat;ImGui;

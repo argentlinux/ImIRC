@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "imirc",
+  "version": "0.1",
+  "dependencies": [
+    "boost-asio",
+    "boost-system",
+    "boost-thread",
+    "boost-log",
+    "boost-date-time",
+    "boost-program-options",
+    "boost-leaf",
+    "boost-dll",
+    "boost-algorithm",
+    "openssl"
+  ]
+}
