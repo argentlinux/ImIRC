@@ -1,4 +1,6 @@
 build
+build-mingw/
+build-arm64/
 dist/
 *.AppImage
 

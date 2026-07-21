@@ -37,7 +37,7 @@ cmake -S "$ROOT" -B "$BUILD_DIR" \
 
 if [[ -z "$VERSION" ]]; then
 	VERSION="$(cmake -S "$ROOT" -B "$BUILD_DIR" -N 2>/dev/null | sed -n 's/.*CMAKE_PROJECT_VERSION:STATIC=//p' | head -1)"
-	VERSION="${VERSION:-0.1.0}"
+	VERSION="${VERSION:-0.2.0}"
 fi
 log "Version ${VERSION} (${ARCH})"
 

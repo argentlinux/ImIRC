@@ -31,6 +31,31 @@ target_link_libraries(client
     util
 )
 
+if(WIN32)
+	# OpenSSL static + Winsock / crypto helpers; GLFW needs GDI/user32.
+	target_link_libraries(client
+		opengl32
+		gdi32
+		user32
+		shell32
+		ole32
+		uuid
+		ws2_32
+		crypt32
+		bcrypt
+		advapi32
+	)
+endif()
+
+# Fully static MinGW runtime so the portable zip needs no libgcc/libstdc++ DLLs.
+if(MINGW)
+	target_link_options(client PRIVATE
+		-static
+		-static-libgcc
+		-static-libstdc++
+	)
+endif()
+
 add_custom_command(TARGET client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:client>/fonts
     COMMAND ${CMAKE_COMMAND} -E copy_directory

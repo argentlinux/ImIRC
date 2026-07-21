@@ -209,18 +209,27 @@ std::string IrcConfig::configDir()
 			return beside.string();
 	}
 
-	// XDG config home (writable for AppImage, deb, rpm)
-	fs::path xdg;
-	if (const char* xdg_home = std::getenv("XDG_CONFIG_HOME"); xdg_home && xdg_home[0] != '\0')
-		xdg = fs::path(xdg_home) / "imirc";
-	else if (const char* home = std::getenv("HOME"); home && home[0] != '\0')
-		xdg = fs::path(home) / ".config" / "imirc";
+	// System config home when the binary dir is not writable.
+	fs::path cfg;
+#if defined(_WIN32)
+	if (const char* appdata = std::getenv("APPDATA"); appdata && appdata[0] != '\0')
+		cfg = fs::path(appdata) / "imirc";
+	else if (const char* profile = std::getenv("USERPROFILE"); profile && profile[0] != '\0')
+		cfg = fs::path(profile) / "AppData" / "Roaming" / "imirc";
 	else
-		xdg = fs::temp_directory_path() / "imirc-config";
+		cfg = fs::temp_directory_path() / "imirc-config";
+#else
+	if (const char* xdg_home = std::getenv("XDG_CONFIG_HOME"); xdg_home && xdg_home[0] != '\0')
+		cfg = fs::path(xdg_home) / "imirc";
+	else if (const char* home = std::getenv("HOME"); home && home[0] != '\0')
+		cfg = fs::path(home) / ".config" / "imirc";
+	else
+		cfg = fs::temp_directory_path() / "imirc-config";
+#endif
 
 	std::error_code ec;
-	fs::create_directories(xdg, ec);
-	return xdg.string();
+	fs::create_directories(cfg, ec);
+	return cfg.string();
 }
 
 std::string IrcConfig::serversPath()

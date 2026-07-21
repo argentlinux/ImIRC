@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(PROJECT "imirc")
-project(${PROJECT} VERSION 0.1.0 LANGUAGES C CXX)
+project(${PROJECT} VERSION 0.2.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,11 +21,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(OpenGL)
-find_package(OpenSSL REQUIRED)
-
+# Keep OpenSSL/Boost static (esp. MinGW cross builds / portable zips).
+set(OPENSSL_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
+find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS
     system
     thread
@@ -76,15 +77,18 @@ include_directories(
     "${DEAR_IMGUI_PREFIX}"
 )
 
-if (MSVC)
-    add_compile_definitions(PLATFORM_MSVC)
+if (WIN32)
     add_compile_definitions(_WIN32_WINNT=0x0603)
     add_compile_definitions(WIN32_LEAN_AND_MEAN)
+endif ()
+
+if (MSVC)
+    add_compile_definitions(PLATFORM_MSVC)
 endif (MSVC)
 
-if (UNIX)
+if (UNIX AND NOT WIN32)
     add_compile_definitions(PLATFORM_UNIX)
-endif (UNIX)
+endif ()
 
 # Prefer std::filesystem with Boost.DLL (avoids needing boost-filesystem as a direct dep).
 add_compile_definitions(BOOST_DLL_USE_STD_FS)

@@ -1,0 +1,34 @@
+# Native Linux packaging image (amd64 or arm64 via --platform).
+# Used by scripts/package-linux-arm64.sh under qemu when the host is x86_64.
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+	TZ=UTC
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	build-essential \
+	ca-certificates \
+	cmake \
+	curl \
+	file \
+	git \
+	ninja-build \
+	pkg-config \
+	rpm \
+	tar \
+	unzip \
+	zip \
+	libgl1-mesa-dev \
+	libx11-dev \
+	libxcursor-dev \
+	libxi-dev \
+	libxinerama-dev \
+	libxrandr-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+# vcpkg lives on a volume at /opt/vcpkg (bootstrapped by the entry script).
+ENV VCPKG_ROOT=/opt/vcpkg \
+	VCPKG_DEFAULT_BINARY_CACHE=/opt/vcpkg-cache \
+	VCPKG_FORCE_SYSTEM_BINARIES=1
+
+WORKDIR /src
